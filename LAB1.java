@@ -37,7 +37,7 @@ class FoodOrder {
         for (MenuItem item : items) {
             item.displayItem();
         }
-        System.out.println("Total Price: $" + totalPrice);
+        System.out.println("Total Price: Rs: " + totalPrice);
     }
 }
 
@@ -60,9 +60,9 @@ class MenuItem {
 
     public void displayItem() {
         if (quantity == 1) {
-            System.out.println(itemName + ": $" + price);
+            System.out.println(itemName + ": Rs: " + price);
         } else {
-            System.out.println(itemName + " (Quantity: " + quantity + "): $" + price);
+            System.out.println(itemName + " (Quantity: " + quantity + "): Rs: " + price);
         }
     }
 }
@@ -112,7 +112,7 @@ public class LAB1 {
 
                         System.out.print("Enter Item Name: ");
                         String itemName = scanner.next();
-                        System.out.print("Enter Item Price: $");
+                        System.out.print("Enter Item Price Rs: ");
                         double itemPrice = scanner.nextDouble();
                         System.out.print("Enter Item Quantity (1 if not specified): ");
                         int itemQuantity = scanner.nextInt();
