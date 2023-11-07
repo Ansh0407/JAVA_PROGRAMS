@@ -1,3 +1,3 @@
 # JAVA_PROGRAMS 
 
-This repository contains java programs based on domain "FOOD DELIVERY"
+This repository contains Java programs based on the domain "FOOD DELIVERY APP."
