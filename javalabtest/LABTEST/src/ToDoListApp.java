@@ -142,6 +142,26 @@ class ToDoListSystem {
         }
     }
 
+    public List<Task> searchTasks(String keyword) {
+        List<Task> searchResults = new ArrayList<>();
+
+        try {
+            String searchQuery = String.format("SELECT * FROM Tasks WHERE description LIKE '%%%s%%'", keyword);
+            ResultSet resultSet = statement.executeQuery(searchQuery);
+
+            while (resultSet.next()) {
+                int taskId = resultSet.getInt("id");
+                String taskDescription = resultSet.getString("description");
+                boolean completed = resultSet.getBoolean("completed");
+                searchResults.add(new Task(taskId, taskDescription, completed));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return searchResults;
+    }
+
     public void closeDatabase() {
         try {
             if (statement != null) {
@@ -172,6 +192,7 @@ public class ToDoListApp extends JFrame {
         JButton removeTaskButton = new JButton("Remove Task");
         JButton updateTaskButton = new JButton("Update Task");
         JButton clearTasksButton = new JButton("Clear Tasks");
+        JButton searchTaskButton = new JButton("Search Task");
         JButton exitButton = new JButton("Exit");
 
         setLayout(new BorderLayout());
@@ -186,6 +207,7 @@ public class ToDoListApp extends JFrame {
         buttonPanel.add(removeTaskButton);
         buttonPanel.add(updateTaskButton);
         buttonPanel.add(clearTasksButton);
+        buttonPanel.add(searchTaskButton);
         buttonPanel.add(exitButton);
 
         add(buttonPanel, BorderLayout.SOUTH);
@@ -232,9 +254,17 @@ public class ToDoListApp extends JFrame {
             }
         });
 
+        searchTaskButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                searchTask();
+            }
+        });
+
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                toDoListSystem.closeDatabase();
                 toDoListSystem.closeDatabase();
                 System.exit(0);
             }
@@ -298,6 +328,25 @@ public class ToDoListApp extends JFrame {
         if (confirmation == JOptionPane.YES_OPTION) {
             toDoListSystem.clearTasksFromDatabase();
             updateOutput("All tasks cleared from the database.");
+        }
+    }
+
+    private void searchTask() {
+        String searchKeyword = JOptionPane.showInputDialog("Enter search keyword:");
+        List<Task> searchResults = toDoListSystem.searchTasks(searchKeyword);
+
+        if (searchResults.isEmpty()) {
+            updateOutput("No matching tasks found.");
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Search Results:\n");
+            for (Task task : searchResults) {
+                stringBuilder.append("Task ID: ").append(task.taskId)
+                        .append(", Description: ").append(task.taskDescription)
+                        .append(", Completed: ").append(task.completed)
+                        .append("\n");
+            }
+            updateOutput(stringBuilder.toString());
         }
     }
 
